@@ -7,7 +7,8 @@
 #include <chrono>
 #include <sstream>
 
-#ifdef _WIN32    #include <winsock2.h>
+#ifdef _WIN32
+    #include <winsock2.h>
     #include <ws2tcpip.h>
     #pragma comment(lib, "ws2_32.lib")
     typedef int socklen_t;
