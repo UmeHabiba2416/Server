@@ -1,267 +1,173 @@
-# 🖤 NU–Information Exchange System
+Departmental Messaging System – Client/Server (C++ • Winsock)
+<p align="center"> <img src="https://i.imgur.com/Uk0H3UL.png" width="100%" alt="Dark Banner"/> </p> <p align="center"> <img src="https://img.shields.io/badge/Language-C++17-1e1e1e?style=for-the-badge&logo=c%2B%2B&logoColor=00599C"> <img src="https://img.shields.io/badge/Platform-Windows-1e1e1e?style=for-the-badge&logo=windows&logoColor=white"> <img src="https://img.shields.io/badge/Networking-TCP-1e1e1e?style=for-the-badge&logo=protocols&logoColor=white"> <img src="https://img.shields.io/badge/Status-Stable-1e1e1e?style=for-the-badge&logo=vercel&logoColor=00ff99"> </p>
+🌙 Overview
 
-<p align="center">
-  <img src="https://i.imgur.com/Uk0H3UL.png" width="100%" alt="Dark Banner"/>
-</p>
+A multi-client, department-based messaging system developed using C++ (Winsock2) & Multi-Threading.
+Each user belongs to a department, and messages are routed only to members of the same department.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Language-C++11-1e1e1e?style=for-the-badge&logo=c%2B%2B&logoColor=00599C">
-  <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20Windows-1e1e1e?style=for-the-badge&logo=windows-terminal&logoColor=white">
-  <img src="https://img.shields.io/badge/Networking-TCP%20%7C%20UDP-1e1e1e?style=for-the-badge&logo=protocols&logoColor=white">
-  <img src="https://img.shields.io/badge/Status-Stable-1e1e1e?style=for-the-badge&logo=vercel&logoColor=00ff99">
-</p>
+Includes:
 
----
+🖥️ Server (Authentication, routing, heartbeat check, admin console)
 
-# 🌙 Overview
+💻 Client (Messaging UI, message receiving thread, heartbeat sender)
 
-A modern **TCP + UDP based distributed communication system** for connecting NU campuses.
-This is the **official troubleshooting and diagnostics guide**, optimized for **dark mode users**, maintainers, and developers.
+🗂 Project Architecture
+/Project
+│
+├── server.cpp
+├── client.cpp
+├── README.md
+└── data/
+      ├── users.txt
+      ├── logs.txt
+      └── departments.txt
 
----
+⚡ Features
+💼 Client
 
-# ❗ Common Errors & Fixes
+Login with employee ID + password
 
----
+Messages broadcasted within same department
 
-## 🔧 1. **Invalid Campus Choice ("Invalid choice!")**
+Real-time receiving (threaded)
 
-You must enter a **number**, not text.
+Heartbeat every 5 seconds
 
-| Campus   | Number |
-| -------- | ------ |
-| Lahore   | `1`    |
-| Karachi  | `2`    |
-| Peshawar | `3`    |
-| Chiniot  | `4`    |
-| Multan   | `5`    |
+Clean text-based UI
 
-💡 **Fix:** Enter only digits `1–5`.
+Logout + safe exit
 
----
+🖥️ Server
 
-## 🌐 2. **Cannot Connect to Server ("Failed to connect")**
+Handles multiple client connections
 
-Start server *first*:
+Authenticates from users.txt
 
-```bash
+Tracks active users by department
+
+Routes messages department-wise
+
+Logs all activity
+
+Heartbeat timeout detection
+
+Admin console:
+
+View active clients
+
+View logs
+
+Kick user
+
+Shutdown server
+
+💽 User Authentication Format
+
+data/users.txt
+
+1001,password123,HR
+1002,abc123,IT
+2001,test987,Finance
+
+
+Format:
+
+employeeID,password,department
+
+🧰 Build & Run
+▶️ Compile Server
+g++ server.cpp -o server -lws2_32
+
+▶️ Compile Client
+g++ client.cpp -o client -lws2_32
+
+▶️ Run
 ./server
-```
-
-Wait for:
-
-```
-TCP Server listening on port 8080
-UDP Server listening on port 8081
-```
-
-Then run client:
-
-```bash
 ./client
-```
 
----
 
-## 🔒 3. **Port Already in Use**
+Run multiple clients at once.
 
-### Linux/macOS
+❗ Common Errors & Fixes
+🔧 1. Authentication Failed
 
-```bash
-sudo lsof -ti:8080 | xargs kill -9
-sudo lsof -ti:8081 | xargs kill -9
-```
+User not found in users.txt.
 
-### Windows
+Fix by adding:
 
-```bash
+1001,password123,HR
+
+🌐 2. Client Cannot Connect to Server
+
+Start server first:
+
+TCP server listening...
+
+
+Then run client.
+
+🔒 3. Port Already in Use
+
+Windows:
+
 netstat -ano | findstr :8080
-taskkill /PID <PID> /F
-```
+taskkill /PID <pid> /F
 
----
+✉️ 4. Message Not Delivering
 
-## 🔐 4. Authentication Failed
+User must be:
 
-Check that server credentials match:
+✔ Authenticated
+✔ Online
+✔ Same department
 
-```cpp
-map<string, string> campusCredentials = {
-    {"Lahore", "NU-LHR-123"},
-    {"Karachi", "NU-KHI-123"},
-};
-```
+❤️ 5. Heartbeat Not Working
 
-Rebuild:
+Check sending code:
 
-```bash
-make clean
-make all
-```
+safeLog("[DEBUG] Sending heartbeat...");
 
----
+💥 6. Crashes / Segmentation Fault
 
-## ⚙️ 5. Compilation Errors
+Recompile with debug:
 
-### Missing `pthread`
+g++ -g server.cpp -o server -lws2_32
 
-```bash
--pthread
-```
+🧪 Diagnostics Checklist
 
-### Missing `winsock2.h` (Windows)
-
-```bash
--lws2_32
-```
-
-### Missing thread header
-
-```bash
--std=c++11
-```
-
----
-
-## ✉️ 6. Message Not Delivered
-
-Check server status:
-
-```
-Admin> status
-```
-
-Should show all campuses **Online**.
-
-Check logs:
-
-```
-Routed message from Lahore to Karachi
-```
-
----
-
-## 💥 7. Segmentation Fault
-
-Use debugging build:
-
-```bash
-g++ -g -o client campus_client.cpp -std=c++11 -pthread
-gdb ./client
-```
-
----
-
-## ⌨️ 8. Input Issues (Menu Broken)
-
-Add cleanup after input:
-
-```cpp
-cin.ignore(numeric_limits::max(), '\n');
-```
-
----
-
-## ❤️ 9. Heartbeat Failing
-
-Check UDP 8081.
-
-Add debug:
-
-```cpp
-safeLog("[DEBUG] Sending heartbeat…");
-```
-
----
-
-## 📡 10. Broadcast Not Received
-
-Allow UDP 8082:
-
-```bash
-sudo ufw allow 8082/udp
-```
-
----
-
-# 🧪 Diagnostics Checklist
-
-✔ Compilation successful
-✔ Server shows TCP/UDP listening
-✔ Client selects valid number
-✔ Authentication successful
-✔ Campuses online in `status`
+✔ Client authenticates
+✔ Server logs routing
 ✔ Heartbeats visible
-✔ Broadcasts received
-✔ Exits cleanly
+✔ Messages delivered to same department
+✔ No timeouts
+✔ Admin console working
+✔ Client exit clean
 
----
-
-# 🔍 Networking Test Commands
-
-### Check Ports
-
-**Linux/macOS**
-
-```bash
-netstat -an | grep 8080
-```
-
-**Windows**
-
-```bash
+📡 Useful Commands
+Windows Port Check
 netstat -an | findstr 8080
-```
 
-### Telnet Connectivity
+⚙️ Debug Mode (Optional)
 
-```bash
-telnet 127.0.0.1 8080
-```
+Add inside code:
 
----
+safeLog("DEBUG: Bytes received = " + to_string(bytes));
 
-# ⚙️ Debug Mode
+🌟 Best Practices
 
-Add logs:
+✔ Always start server first
+✔ Don’t use Ctrl+C (use proper logout)
+✔ Use valid credentials
+✔ Run at least 2 clients for testing
+✔ Keep port 8080 free
 
-```cpp
-safeLog("DEBUG: Received bytes=" + to_string(bytes));
-```
+👥 Contributors
 
-Compile with debug flags:
+Member 1 – Authentication & File Handling
 
-```bash
-make debug
-```
+Member 2 – Server Logic & Routing
 
----
+Member 3 – Client UI & Messaging (you)
 
-# 🌟 Best Practices
-
-✔ Start server before all clients
-✔ Avoid Ctrl+C (use proper exit)
-✔ Keep ports clean
-✔ Test with 2 clients first
-✔ Monitor server logs continuously
-
----
-
-# ✅ System Working Checklist
-
-A fully working system will show:
-
-* TCP & UDP servers active
-* Client authenticated
-* Campus online status
-* Routing logs for each message
-* Heartbeat every 10 seconds
-* Successful broadcast reach
-* No crashes or segmentation faults
-
----
-
-# 🖼 Bonus: Add this as your GitHub Project Header
-
-```md
-![NU Info Exchange Banner](https://i.imgur.com/Uk0H3UL.png)
+🖼 Add This as Your GitHub Header
+![Department Messaging Banner](https://i.imgur.com/Uk0H3UL.png)
