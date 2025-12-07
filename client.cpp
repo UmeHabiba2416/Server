@@ -39,7 +39,7 @@ bool isConnected = false;
 mutex coutMutex;
 
 // Department list
-const string departments[] = {"Admissions", "Academics", "IT", "Sports"};
+const string departments[] = {"CS", "SE", "AI", "EE"};
 
 void safeLog(const string& message) {
     lock_guard<mutex> lock(coutMutex);
@@ -310,25 +310,31 @@ int main() {
     
     // Campus selection
     cout << "Select your campus:\n";
-    cout << "1. Lahore (Password: NU-LHR-123)\n";
-    cout << "2. Karachi (Password: NU-KHI-123)\n";
-    cout << "3. Peshawar (Password: NU-PES-123)\n";
-    cout << "4. Chiniot/CFD (Password: NU-CFD-123)\n";
-    cout << "5. Multan (Password: NU-MLT-123)\n";
-    cout << "Enter campus number: ";
+    cout << "1. Lahore (Password: 23L-0999)\n";
+    cout << "2. Karachi (Password: 23K-0664)\n";
+    cout << "3. Peshawar (Password: 23P-0871)\n";
+    cout << "4. Chiniot/CFD (Password: 23F-0763)\n";
+    cout << "5. Multan (Password: 23M-0740)\n";
+    cout << "Enter campus number (1-5): ";
     
     int choice;
-    cin >> choice;
+    if (!(cin >> choice)) {
+        cout << "\nError: Please enter a NUMBER (1-5), not text!\n";
+        cout << "Example: Enter '1' for Lahore\n";
+        return 1;
+    }
     cin.ignore();
     
     switch(choice) {
-        case 1: campusName = "Lahore"; campusPassword = "NU-LHR-123"; break;
-        case 2: campusName = "Karachi"; campusPassword = "NU-KHI-123"; break;
-        case 3: campusName = "Peshawar"; campusPassword = "NU-PES-123"; break;
-        case 4: campusName = "Chiniot"; campusPassword = "NU-CFD-123"; break;
-        case 5: campusName = "Multan"; campusPassword = "NU-MLT-123"; break;
+        case 1: campusName = "Lahore"; campusPassword = "23L-0999"; break;
+        case 2: campusName = "Karachi"; campusPassword = "23K-0664"; break;
+        case 3: campusName = "Peshawar"; campusPassword = "23P-0871"; break;
+        case 4: campusName = "Chiniot"; campusPassword = "23F-0763"; break;
+        case 5: campusName = "Multan"; campusPassword = "23M-0740"; break;
         default:
-            cout << "Invalid choice!\n";
+            cout << "\nInvalid choice! Please enter a number between 1 and 5.\n";
+            cout << "You entered: " << choice << "\n";
+            cout << "Try again and enter just the number (e.g., '1' for Lahore)\n";
             return 1;
     }
     
