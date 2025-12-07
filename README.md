@@ -170,5 +170,5 @@ Member 2 – Server Logic & Routing
 Member 3 – Client UI & Messaging (you)
 
 🖼 Add This as Your GitHub Header
-![Department Messaging Banner](<img width="815" height="731" alt="Screenshot 2025-12-07 185539" src="https://github.com/user-attachments/assets/87a02697-64e1-4b41-b9a9-4df3029e86e7" />
+![Department Messaging Banner](https://github.com/UmeHabiba2416/Server/blob/main/Screenshot%202025-12-07%20185539.png
 )
